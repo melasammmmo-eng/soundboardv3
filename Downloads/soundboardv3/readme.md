@@ -15,5 +15,5 @@ This is a browser soundboard app that dynamically loads audio files from the `so
 
 ## Local development
 
-- Run locally with `npm install` and `npm start`.
-- The local server still uses `server.js` and serves the same `sound-files` endpoint.
+- Run locally with `npx vercel dev`.
+- The app is deployed as a static site with the `/sound-files` API route handled by `api/sound-files.js`.
