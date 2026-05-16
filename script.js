@@ -91,7 +91,7 @@ function filterSounds() {
 }
 
 async function fetchSoundFiles() {
-  const endpoints = ['/api/sound-files', '/sound-files'];
+  const endpoints = ['/sound-files.json', '/api/sound-files', '/sound-files'];
 
   for (const endpoint of endpoints) {
     try {
