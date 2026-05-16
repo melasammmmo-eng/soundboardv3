@@ -2,9 +2,11 @@ const soundboard = document.getElementById('soundboard');
 const overlapToggle = document.getElementById('overlap-toggle');
 const stopAllButton = document.getElementById('stop-all');
 const statusText = document.getElementById('status-text');
+const searchInput = document.getElementById('search-input');
 
 let preventOverlap = false;
 const activeAudios = new Set();
+let allSoundFiles = [];
 
 function formatName(filename) {
   return filename
@@ -62,8 +64,10 @@ function createSoundButton(file) {
 }
 
 function renderSounds(files) {
+  soundboard.innerHTML = '';
+
   if (!files.length) {
-    soundboard.innerHTML = '<p class="empty-state">No sound files found in the sound folder. Add MP3/WAV/OGG files and refresh.</p>';
+    soundboard.innerHTML = '<p class="empty-state">No matching sounds found. Try a different search term.</p>';
     return;
   }
 
@@ -72,13 +76,31 @@ function renderSounds(files) {
   });
 }
 
+function filterSounds(query) {
+  const normalizedQuery = query.trim().toLowerCase();
+  const filtered = normalizedQuery
+    ? allSoundFiles.filter(file => formatName(file).toLowerCase().includes(normalizedQuery))
+    : allSoundFiles;
+
+  renderSounds(filtered);
+}
+
 fetch('/sound-files')
   .then(response => response.json())
-  .then(files => renderSounds(files))
+  .then(files => {
+    allSoundFiles = files;
+    filterSounds('');
+  })
   .catch(error => {
     soundboard.innerHTML = '<p class="empty-state">Unable to load sound files.</p>';
     console.error(error);
   });
+
+if (searchInput) {
+  searchInput.addEventListener('input', event => {
+    filterSounds(event.target.value);
+  });
+}
 
 overlapToggle.addEventListener('click', () => {
   preventOverlap = !preventOverlap;
