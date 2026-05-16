@@ -6,7 +6,7 @@ const searchInput = document.getElementById('search-input');
 
 let preventOverlap = false;
 const activeAudios = new Set();
-let allSoundFiles = [];
+let soundFiles = [];
 
 function formatName(filename) {
   return filename
@@ -67,7 +67,11 @@ function renderSounds(files) {
   soundboard.innerHTML = '';
 
   if (!files.length) {
-    soundboard.innerHTML = '<p class="empty-state">No matching sounds found. Try a different search term.</p>';
+    const message = searchInput.value.trim()
+      ? 'No sounds match your search.'
+      : 'No sound files found in the sound folder. Add MP3/WAV/OGG files and refresh.';
+
+    soundboard.innerHTML = `<p class="empty-state">${message}</p>`;
     return;
   }
 
@@ -76,20 +80,38 @@ function renderSounds(files) {
   });
 }
 
-function filterSounds(query) {
-  const normalizedQuery = query.trim().toLowerCase();
-  const filtered = normalizedQuery
-    ? allSoundFiles.filter(file => formatName(file).toLowerCase().includes(normalizedQuery))
-    : allSoundFiles;
+function filterSounds() {
+  const query = searchInput.value.trim().toLowerCase();
+  const filtered = soundFiles.filter(file => {
+    const title = formatName(file).toLowerCase();
+    return title.includes(query) || file.toLowerCase().includes(query);
+  });
 
   renderSounds(filtered);
 }
 
-fetch('/sound-files')
-  .then(response => response.json())
+async function fetchSoundFiles() {
+  const endpoints = ['/api/sound-files', '/sound-files'];
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.warn(`Failed to fetch from ${endpoint}:`, error);
+    }
+  }
+
+  throw new Error('Unable to load sound files from any endpoint.');
+}
+
+fetchSoundFiles()
   .then(files => {
-    allSoundFiles = files;
-    filterSounds('');
+    soundFiles = files;
+    renderSounds(files);
   })
   .catch(error => {
     soundboard.innerHTML = '<p class="empty-state">Unable to load sound files.</p>';
@@ -97,9 +119,7 @@ fetch('/sound-files')
   });
 
 if (searchInput) {
-  searchInput.addEventListener('input', event => {
-    filterSounds(event.target.value);
-  });
+  searchInput.addEventListener('input', filterSounds);
 }
 
 overlapToggle.addEventListener('click', () => {

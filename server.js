@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.static(__dirname));
 
-app.get('/sound-files', (req, res) => {
+const soundFileHandler = (req, res) => {
   const soundDir = path.join(__dirname, 'sound');
   fs.readdir(soundDir, (err, files) => {
     if (err) {
@@ -15,7 +15,9 @@ app.get('/sound-files', (req, res) => {
     const audioFiles = files.filter(file => /\.(mp3|wav|ogg|m4a)$/i.test(file));
     res.json(audioFiles);
   });
-});
+};
+
+app.get(['/sound-files', '/api/sound-files'], soundFileHandler);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
