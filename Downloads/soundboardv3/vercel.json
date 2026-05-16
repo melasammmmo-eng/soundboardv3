@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/sound-files",
+      "destination": "/api/sound-files"
+    }
+  ]
+}

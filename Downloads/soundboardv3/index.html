@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KINGFROGS Soundboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero-panel">
+      <div class="hero-copy">
+        <p class="eyebrow">KINGFROGS</p>
+        <h1>soundboard</h1>
+        <p class="subtitle">nice and smooth <code>sound</code> folder and refresh.</p>
+      </div>
+      <div class="hero-badge">use it</div>
+    </header>
+
+    <main class="content-panel">
+      <section class="info-card">
+        <h2>ready when u are</h2>
+        <p>Tap any button below to play the sound instantly. Use the toggle to prevent overlap and stop all sounds at any time.</p>
+      </section>
+
+      <section class="action-row">
+        <button class="control-btn" id="overlap-toggle">Prevent overlap: Off</button>
+        <button class="control-btn stop-btn" id="stop-all">Stop all sounds</button>
+        <span class="status-text" id="status-text">0 sounds playing</span>
+      </section>
+
+      <section class="soundboard" id="soundboard"></section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
